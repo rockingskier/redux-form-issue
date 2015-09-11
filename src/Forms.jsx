@@ -28,8 +28,12 @@ class DynamicForm extends Component {
 
 class FormContainer extends Component {
   render() {
+    const {path} = this.props;
     return (
       <div>
+        <hr/>
+        <h3>{path} (from redux-react-router state)</h3>
+        <hr/>
         <h2>DefinedForm</h2>
         <DefinedForm
           formKey={this.props.formKey + 'DefinedForm'} />
@@ -37,14 +41,22 @@ class FormContainer extends Component {
         <h2>DynamicForm</h2>
         <DynamicForm
           formKey={this.props.formKey + 'DynamicForm'}
-          formName={'contact'}
+          formName="contact"
           fieldsNeeded={['name']} />
       </div>
     );
   }
 }
-const ConnectedFormContainer = connect(state => state)(FormContainer);
 
+/**
+ * I'm not entirely sure why it doesn't work when you have connect(state => state), but if you just use
+ * connect(), which does not inject state, or select a specific slice of state, then it works.
+ **/
+const ConnectedFormContainer = connect(
+  state => ({
+    path: state.router.pathname
+  })
+)(FormContainer);
 
 export default class extends Component {
   render() {
